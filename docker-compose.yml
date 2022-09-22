@@ -1,28 +1,29 @@
-version: '3.9'
+version: "3.3"
 
 services:
   web:
     container_name: web-service
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
+    command: python /app/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/usr/app
+    ports:
+      - "8000:8000"
     depends_on:
       - db
     healthcheck:
-      test: curl http://0.0.0.0:8000 || exit 1
+      test: curl http://0.0.0.0:8000/ || exit 1
       interval: 1m30s
-      timeout: 30s
-      retries: 5
+      timeout: 40s
+      retries: 3
       start_period: 30s
-
+  
   db:
     image: postgres:13.8-bullseye
     volumes:
-      - postgres_data:var/lib/postgres_data:rw
+      - postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
+
 volumes:
-  - postgres_data
+  postgres_data:
